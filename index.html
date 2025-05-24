@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"> 
+  <title>ランダムYouTube再生</title>
+</head>
+<body>
+  <h1>AI音楽ガチャ sanukiudonmikan</h1>
+  <div id="player"></div>
+  <button onclick="loadRandomVideo()">今日の1曲ガチャ</button>
+
+  <script>
+    const API_KEY = 'AIzaSyCIm-vZuDU-BT33a_Pqw0L0V612f5OGrdg'; // ←ここに取得したAPIキーを入れてください
+    const CHANNEL_ID = 'UCix87xa5MbYucyWq_G4DOqA'; // ←ここにチャンネルIDを入れてください
+    let videoIds = [];
+
+    // 動画一覧を取得
+    async function fetchVideoIds(pageToken = '') {
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=50&type=video&pageToken=${pageToken}`);
+      const data = await res.json();
+
+      data.items.forEach(item => {
+        if (item.id.videoId) {
+          videoIds.push(item.id.videoId);
+        }
+      });
+
+      // 次のページがあれば再帰的に取得
+      if (data.nextPageToken) {
+        await fetchVideoIds(data.nextPageToken);
+      } else {
+        loadRandomVideo();
+      }
+    }
+
+    // ランダムに動画を再生
+    function loadRandomVideo() {
+      const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
+      const iframe = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${randomId}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+      document.getElementById("player").innerHTML = iframe;
+    }
+
+    // ページ読み込み時に実行
+    window.onload = () => {
+      fetchVideoIds();
+    };
+  </script>
+</body>
+</html>
