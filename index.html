@@ -307,8 +307,19 @@
             <p class="subtitle">香川県のAI作曲家</p>
             <div class="location-badge">🍜 香川県 🍊</div>
             <p class="tagline">SNSで香川の魅力を音楽で発信</p>
-<iframe src="https://script.google.com/macros/s/AKfycbz3ThDN8x-JWiXmGbFYrhQEerK-ejFpt0faZuY6w1T4jpoZhGXoGF_Yd64tCFzBGOEfIw/exec" frameborder="0" width="200" height="100" scrolling="no"></iframe>
+<iframe src="https://script.google.com/macros/s/AKfycbzd_21inwd53qeDKu5QTRuks3rp_CNZC5rNJrOtK3PpMdolPiwZ5UjD9k4hXuVYXlEfaw/exec" frameborder="0" width="200" height="100" scrolling="no"></iframe>
+<div id="access-counter"></div>
 
+<script>
+  fetch('https://script.google.com/macros/s/AKfycbzd_21inwd53qeDKu5QTRuks3rp_CNZC5rNJrOtK3PpMdolPiwZ5UjD9k4hXuVYXlEfaw/exec')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('access-counter').innerHTML = html;
+    })
+    .catch(error => {
+      console.error('アクセスカウンターの読み込みに失敗しました:', error);
+    });
+</script>
         </header>
 
         <div class="main-content">
