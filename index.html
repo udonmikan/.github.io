@@ -260,36 +260,7 @@
             animation: float 15s infinite linear;
         }
 
-/* 可愛いカウンタースタイル */
-#access-counter {
-  font-family: 'Mochiy Pop One', cursive; /* もしくは他の可愛いフォント */
-  text-align: center;
-  padding: 15px;
-  border: 2px solid #FFC0CB; /* パステルピンクのボーダー */
-  border-radius: 20px; /* 角を丸く */
-  background-color: #FFF0F5; /* 薄いピンクの背景 */
-  box-shadow: 3px 3px 8px rgba(0,0,0,0.1); /* ほんのり影 */
-  color: #FF69B4; /* 濃いピンクの文字色 */
-  display: inline-block; /* 内容に合わせて幅を調整 */
-}
 
-#access-counter p {
-  margin: 5px 0;
-  font-size: 1.1em;
-}
-
-#access-counter strong {
-  font-size: 2.5em;
-  color: #FF1493; /* アクセス数を強調する色 */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
-#access-counter .hit-message {
-  color: #FF4500;
-  font-weight: bold;
-  font-size: 1.2em;
-  animation: bounce 0.5s infinite alternate;
-}
 
 @keyframes bounce {
   from { transform: translateY(0); }
@@ -336,18 +307,7 @@
             <p class="subtitle">香川県のAI作曲家</p>
             <div class="location-badge">🍜 香川県 🍊</div>
             <p class="tagline">SNSで香川の魅力を音楽で発信</p>
-<div id="access-counter"></div>
-
-<script>
-  fetch('https://script.google.com/macros/s/AKfycbz3ThDN8x-JWiXmGbFYrhQEerK-ejFpt0faZuY6w1T4jpoZhGXoGF_Yd64tCFzBGOEfIw/exec')
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById('access-counter').innerHTML = html;
-    })
-    .catch(error => {
-      console.error('アクセスカウンターの読み込みに失敗しました:', error);
-    });
-</script>
+<iframe src="https://script.google.com/macros/s/AKfycbz3ThDN8x-JWiXmGbFYrhQEerK-ejFpt0faZuY6w1T4jpoZhGXoGF_Yd64tCFzBGOEfIw/exec" frameborder="0" width="200" height="100" scrolling="no"></iframe>
 
         </header>
 
