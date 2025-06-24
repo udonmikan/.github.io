@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -242,6 +243,69 @@
             }
         }
 
+        @media (max-width: 480px) {
+            header {
+                padding: 20px 10px;
+                margin: 10px 0;
+            }
+            .logo {
+                font-size: 1.4rem;
+                line-height: 1.2;
+            }
+            .subtitle, .tagline {
+                font-size: 1rem;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin: 15px 0;
+            }
+            .card {
+                padding: 15px 8px;
+                border-radius: 14px;
+            }
+            .card h2 {
+                font-size: 1.1rem;
+                gap: 6px;
+            }
+            .track-title {
+                font-size: 1.2rem;
+            }
+            .track-description {
+                font-size: 1rem;
+            }
+            .location-badge {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+            .features-list li {
+                font-size: 0.95rem;
+                padding: 7px 0 7px 22px;
+            }
+            .social-links {
+                flex-direction: column;
+                gap: 10px;
+                margin: 15px 0;
+            }
+            .social-btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            iframe {
+                width: 100% !important;
+                height: 180px !important;
+                min-width: 0 !important;
+            }
+            #player iframe {
+                width: 100% !important;
+                height: 180px !important;
+                min-width: 0 !important;
+            }
+            .floating-notes {
+                height: 100vh;
+            }
+        }
+
         .floating-notes {
             position: fixed;
             top: 0;
@@ -261,14 +325,12 @@
         }
 
 
-
-@keyframes bounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-5px); }
-}
-
-
-
+        .note {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
 
         @keyframes float {
             0% {
@@ -309,8 +371,6 @@
             <p class="tagline">SNSで香川の魅力を音楽で発信</p>
        </header>
 
-
- 
         <div class="main-content" center; margin: 30px 0;>
             <div class="card featured-track">           <a href="https://youtu.be/vgsE_oD705U?si=lZ5IiWGRqDSFhcCC">
                 <h2 class="track-title pulse-animation">🎵 うどん県＝香川</h2>
