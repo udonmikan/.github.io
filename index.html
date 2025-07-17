@@ -369,6 +369,13 @@
             <p class="subtitle">香川県のAI音楽作曲家</p>
             <div class="location-badge">🍜 香川県 🍊</div>
             <p class="tagline">香川県（うどん県）の魅力を音楽で表現♪</p>
+
+        <div class="links1">
+            <a href="music.html" target="_blank">
+                <img src="image/music.png">
+            </a>
+<br>↑Youtubeで全ての曲を聴く
+
        </header>
 
         <div class="main-content" center; margin: 30px 0;>
@@ -376,55 +383,19 @@
                 <h2 class="track-title pulse-animation">🎵 うどん県＝香川</h2>
                 <p class="track-description">代表作品・香川県の魅力を歌った楽曲</p></a>
             </div>
-  
 
-<div class="card featured-track" center; margin: 30px 0;>    
-            <h2><span class="icon">🎧</span>AI音楽ガチャ sanukiudonmikan</h2>
-  <div id="player"></div>
-  <button onclick="loadRandomVideo()">今日の1曲ガチャ</button>          
-＊使用制限で使えないことがあります
-  <script>
-    const API_KEY = 'AIzaSyCIm-vZuDU-BT33a_Pqw0L0V612f5OGrdg'; // ←ここに取得したAPIキーを入れてください
-    const CHANNEL_ID = 'UCix87xa5MbYucyWq_G4DOqA'; // ←ここにチャンネルIDを入れてください
-    let videoIds = [];
+ <div class="card featured-track" center; margin: 30px 0;>    
+            <h2><span class="icon">🎧</span>うどん県＝香川</h2>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/vgsE_oD705U?si=PmvQ1FhvsU0NfLYP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-    // 動画一覧を取得
-    async function fetchVideoIds(pageToken = '') {
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=50&type=video&pageToken=${pageToken}`);
-      const data = await res.json();
+            </div>   
 
-      data.items.forEach(item => {
-        if (item.id.videoId) {
-          videoIds.push(item.id.videoId);
-        }
-      });
-
-      // 次のページがあれば再帰的に取得
-      if (data.nextPageToken) {
-        await fetchVideoIds(data.nextPageToken);
-      } else {
-        loadRandomVideo();
-      }
-    }
-
-    // ランダムに動画を再生
-    function loadRandomVideo() {
-      const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
-      const iframe = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${randomId}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
-      document.getElementById("player").innerHTML = iframe;
-    }
-
-    // ページ読み込み時に実行
-    window.onload = () => {
-      fetchVideoIds();
-    };
-  </script>
-
-            </div>
 
             <div class="card" center; margin: 30px 0;>
                 <h2><span class="icon">🤖</span>Sanukiudonmikanについて</h2>
                 <p>最新のAI技術を駆使して、香川県の魅力を音楽で表現。讃岐うどん文化から香川の歴史、観光など幅広いテーマで楽曲を制作しています。香川県以外の曲もいろいろあります。</p>
+                <p>Youtube以外でも、曲名を入れるとTikTokやミュージックスタンプ（InstagramとFacebook）で使える音楽です。</p>
+                <p>Apple Music、Amazon music、Spotify、LINE MUSICなど様々なサイトで聴けます。</p>
                 <div class="location-badge" style="margin-top: 15px;">🎯 香川県特化型多数</div>
             </div>
 
@@ -450,7 +421,7 @@
                 🎵 TikTok
             </a>
             <a href="https://ameblo.jp/udonkenmikan/entry-12912516798.html" class="social-btn blog" target="_blank">
-                🎶 Sanukiudonmikan Blog<br>一覧の曲名をTikTok、Instagramで検索
+                🎶 Sanukiudonmikan Blog<br>曲名一覧のリンク（様々な音楽サイト用）
             </a>
         </div>
 

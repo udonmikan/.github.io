@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanukiudonmikan音楽紹介</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            margin: 20px; 
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 40px;
+        }
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .video-item {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden; /* 角丸に合わせてiframeをクリップ */
+            transition: transform 0.2s ease-in-out;
+        }
+        .video-item:hover {
+            transform: translateY(-5px);
+        }
+        .video-item iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* 16:9のアスペクト比を維持 */
+            border: none;
+            display: block; /* iframeの下の余白をなくす */
+        }
+        .video-info {
+            padding: 15px;
+            text-align: center;
+        }
+        .video-info h3 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #0056b3;
+        }
+        .video-info p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 50px;
+            padding: 10px;
+        }
+        .pagination button {
+            padding: 12px 20px;
+            margin: 0 8px;
+            border: 1px solid #007bff;
+            background-color: #e0f0ff;
+            color: #007bff;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .pagination button:hover:not(.active):not(:disabled) {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.4);
+        }
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+            cursor: default;
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+
+@media (max-width: 600px) {
+    body {
+        margin: 5px;
+        font-size: 15px;
+    }
+    h1 {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+    }
+    .video-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 5px;
+    }
+    .video-item {
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .video-info {
+        padding: 8px;
+    }
+    .pagination {
+        margin-top: 20px;
+        padding: 5px;
+    }
+    .pagination button {
+        padding: 10px 12px;
+        font-size: 0.95em;
+        margin: 0 3px;
+    }
+}
+    </style>
+</head>
+<body>
+    <h1>🎵 Sanukiudonmikan音楽紹介 🎵</h1>
+    <div id="video-list" class="video-container">
+        </div>
+    <div class="pagination" id="pagination-controls">
+        </div>
+
+    <script>
+        // --- 1. ここに動画データを配列として定義します ---
+        const allMusicVideos = [
+            { id: 'dUjTwiMxpHY', title: 'おきてやぶり' },
+            { id: 'RaEjEwHd90o', title: 'かたやぶり'},
+            { id: 'iCtARXoXrf4', title: '田舎ノ残響'},
+           { id: 'L3_RYqt8FW8', title: '無念花'},
+           { id: 'T-6g7AQr2gc', title: 'ソレハソレコレハコレ'},
+           { id: '9HaxK6hqX-0', title: '燃え尽きた線香花火'},
+             { id: 'YC789SE4GK8', title: '昔の私にさようなら'},
+             { id: '0lLyr15fIpo', title: '同窓会でまた会いましょう'},
+             { id: '_Z4N1wF4Fgo', title: '幻想一夜花火'},
+             { id: 'fcWzL2dLaxA', title: '余談ですが'},
+             { id: 'MxX6jL0vNGk', title: '7月7日、レインラヴァーズ'},
+             { id: '5-7XiYSL7C8', title: '隣の席は名が近い'},
+             { id: 'Z3jXEXNPnXk', title: '黒歴史確定'},
+             { id: '47xxCay5k5s', title: 'おはぎゃー投資家'},
+             { id: 'Qbo0AkN8RTw', title: '沼へようこそ'},
+             { id: 'mD_-ANV8X_A', title: 'ドウデモエエジャナイカ'},
+             { id: 'ROkWyVtTlDE', title: 'ソンナンエエジャナイカ'},
+             { id: 'k9n0qMg70zc', title: 'コイエエジャナイカ'},
+             { id: 'zqTKfGRLUM8', title: 'モウエエジャナイカ'},
+             { id: 'pcOqIOR8kX0', title: 'コレエエヤン'},
+             { id: 'eG4nCmGFSA0', title: 'ソレシランケド'},
+             { id: 'jpPUg15poQM', title: 'ホンネデエエヤン'},
+             { id: 'K_iG7CyzuYw', title: 'コイシランケド'},
+             { id: 'vLziWrtykxM', title: '異世界への扉が開く'},
+             { id: 'bzmsBzY_8B8', title: '父の日 父に感謝を'},
+             { id: 'IpBif1PwkCI', title: '残暑お見舞い申し上げます'},
+             { id: '2dnR4l_58nQ', title: '暑中お見舞い申し上げます'},
+             { id: 'jekIPRo6_jc', title: 'ノスタルジック BBS'},
+             { id: 'lFp3EZkAI1w', title: '涙を隠す雨の日'},
+             { id: 'a6AhGrahXr4', title: '人生無理ゲー'},
+             { id: 'Ir3DyDkImhI', title: '台風の足音が聴こえる'},
+             { id: 'r3cznFjNUvM', title: '雨の足音が聴こえる'},
+             { id: 'KMmgDM6kmC4', title: '華麗なるスルースキル'},
+             { id: 'AFDCvAN9yX0', title: 'ポンコツなんて言わせない'},
+             { id: '1mOgxutP6m8', title: 'ルート分岐点'},
+             { id: 'jnwKoG2a7zA', title: '謙虚堅実ルート'},
+             { id: 'RqoOcKEhDFk', title: '怠惰傲慢ルート'},
+             { id: 'Wwgz_atk0rc', title: '難攻不落ルート'},
+             { id: 'rPSdqD5Q3V4', title: '努力しか勝たん'},
+             { id: 'EXb_WM82mFs', title: '限界突破'},
+             { id: 'lZ1BeCt2GIw', title: '原点回帰'},
+             { id: 'NXulIuU8SiE', title: '無理を重ねて黒になる'},
+             { id: 'jxyuaSCCuac', title: 'ハッピーエンドじゃ物足りない'},
+             { id: 'd8QbmK5l9t4', title: 'ルート確定'},
+             { id: 'jjS2H1zxfsA', title: '伏線回収'},
+             { id: 'ni3d_SWdf2g', title: 'Happy Wedding Day'},
+             { id: 'YB4T4RR53cM', title: 'ブーケトス'},
+             { id: 'wy_QEFMHvCA', title: '旅のはじまり'},
+             { id: 'IYQDT-mFvIs', title: '無名の新人'},
+             { id: 'duNDbzEqPAk', title: '無名のふるさと'},
+             { id: '1woj_w03Eac', title: '無名の地方'},
+             { id: 'P8jT-NLOiG4', title: 'ふるさとの童心'},
+             { id: 'dwdZWVd3zOI', title: '偶然を必然に'},
+             { id: '-c8I_J1N0ss', title: 'Music that evokes the image of old townscapes'},
+             { id: 'YgRTIiXjETo', title: '売れ残りセール'},
+             { id: '8jrunwfXKMQ', title: '最高最善'},
+             { id: 'y3NitTM7A3o', title: '母の日 母に感謝を'},
+             { id: '1eXEenPHLhI', title: 'さぬきうどんコンシェルジュ'},
+             { id: '0roCnHvPzD4', title: '危険回避'},
+             { id: 'PRmmCcJ4CDE', title: '飛翔'},
+             { id: 'ui6kkLrTTBg', title: '和風庭園'},
+             { id: '8AZmXpihmF0', title: 'うどん県ランチ'},
+             { id: 'gdEIY41s8oA', title: '朝からうどん県'},
+             { id: 'foKAzKs3Xg4', title: 'うどん県の夜遊び'},
+             { id: 'Idsnw1we5tg', title: '恋愛圏内'},
+             { id: 'yLHY2j0mbSw', title: 'こどもの日の童'},
+             { id: 'mLWXAySK248', title: '恋愛圏外'},
+             { id: 'G3HVegZJ5AI', title: '偶然のシナリオ'},
+             { id: 'mt7LM_BH2Ls', title: 'シナリオリセット'},
+             { id: 'VPEdNbbYYZY', title: '言霊'},
+             { id: 'mFfg5xqTJEk', title: '逆鱗'},
+             { id: '01u4btPOvGo', title: '巡る高松市'},
+             { id: 'OQORYa1sSDk', title: '東かがわ市の恵'},
+             { id: '6klU31fit1s', title: 'さぬき市の宴'},
+             { id: 'wEpt9aa3JwY', title: 'レベルアップ香川県'},
+             { id: 'VW_4Kah7QWU', title: 'ネバーギブアップ香川県'},
+             { id: '34sLpVIRnOM', title: '緊急メンテナンスのお知らせ'},
+             { id: 'gI9rUq_NT84', title: 'ポジティブループ'},
+             { id: 'Y848IceuayI', title: 'ネガティブループ'},
+             { id: 'BuIHjXmLbsQ', title: 'サービス終了のお知らせ'},
+             { id: 'ZraAfn8RX94', title: 'Loveカタルシス'},
+             { id: '4af4zm9XWSM', title: 'インターネット老人会'},
+             { id: 'uLVPQUiJ15E', title: 'ワークライフバランス'},
+             { id: '94vvwemDPjU', title: 'マイクロリタイア'},
+             { id: 'sDYUBFu7HAc', title: 'サブスクリプション'},
+             { id: '-ZYvUmgXTeM', title: 'NEW香川県民'},
+             { id: 'hF9U-VL1OG8', title: 'Sanuki Evolved'},
+             { id: 'QQZ2J27ixqw', title: '高解像度香川県'},
+             { id: '0N-JXftFWc0', title: 'メガネエモーション'},
+             { id: 'nDuCHCk2F_8', title: '香川エモーション'},
+             { id: 'sEfST3TI7DQ', title: '瞬間エモーション'},
+             { id: '0nBsMroLOKc', title: '刹那エモーション'},
+             { id: 't6jDdJ5mbqQ', title: '限界集落民の成り上がり'},
+             { id: 'h3q9VxTez5A', title: '千里の道も一歩から'},
+             { id: 'k21I7FzsOYU', title: 'SUGEEE!'},
+             { id: 'jqARQs58MSQ', title: 'マックス課金'},
+             { id: 'vhqhYFfnO_0', title: '無課金ゲーム'},
+             { id: 'a3LAj_X3Ov4', title: '廃課金ゲーム'},
+             { id: 'MXIZ8TeZlMo', title: '課金ゲーム'},
+             { id: 'QkmgQ3Jemoc', title: 'Uzeee！'},
+             { id: 'LeyO5jGDdvo', title: 'Tueee!'},
+             { id: 'l0pb095QRiQ', title: '花冠'},
+             { id: 'LvD4euHSEpQ', title: '花粉黄砂ダブルパンチ'},
+             { id: 'jmY7fIe4vO0', title: 'Blossoming in the losers bracket'},
+             { id: 'gMMYeLXD2ZU', title: 'Sowing the Seeds of Happiness'},
+             { id: 'EetN7uAX_cc', title: '重大なエラーが発生しました'},
+             { id: 'N254FClrMHA', title: 'アクセスが集中しています'},
+             { id: 'vJyE_bE-U2M', title: 'システムエラー'},
+             { id: 'S05WXGZj_EU', title: 'リジェクトの嵐'},
+             { id: 'sSimjapcKQk', title: '香川からやってきたブリ 久しぶり'},
+             { id: 'V6VHWkmy7DU', title: '無限リジェクト'},
+             { id: 'bLI41WlBzjE', title: '昔は綺麗だった'},
+             { id: 'pEO8RIAR99Y', title: '初心者ぶり'},
+             { id: 'dHPOnegYJDo', title: 'Music that evokes the image of walking down a long shopping street'},
+             { id: 'vjlY8B8UN4', title: '株価暴落恐慌襲来'},
+             { id: 'nb1msw_5Utc', title: 'Music to listen to while relaxing in the salon'},
+             { id: 'xKi_dbIs_mk', title: '世界同時株安の混乱'},
+             { id: 'k40xOVDO1MI', title: '半額惣菜エトセトラ'},
+             { id: '6pfpm9QeqIg', title: '株価上昇に乗って行け！イナゴライダー'},
+             { id: 'Ye-T6-Rg_9E', title: '人間関係リセット症候群'},
+             { id: 'hof4R0klBKg', title: '承認欲求モンスター'},
+             { id: 'MzoBXSdGJfA', title: '世界をだますエイプリルフール'},
+             { id: 'vtG8nePGbPc', title: '今日はマイバースディ'},
+             { id: 'rX9LneXkYaQ', title: 'My Birthdayアピール'},
+             { id: 'nJ9xR04zEhU', title: 'My birthday is today'},
+             { id: 'O5NVERMC7FE', title: 'モブキャラレボリューション'},
+             { id: 'bcu56wI8T-s', title: '田舎のモブキャラ'},
+             { id: 'Aop7UMCtd9k', title: 'モブキャラ応援隊'},
+             { id: 'cKgIgX3rpkA', title: '量産型と呼ばれて'},
+             { id: 'Cr5kssACV_A', title: '春の嘘噂'},
+             { id: 'kS-B-N1Ao1k', title: '春ノ雪が降る頃に'},
+             { id: 'g8lYEPlRicA', title: '名もなきモブの人生'},
+             { id: 'rshy8nwnvl0', title: 'いつもだれかのおまけ'},
+             { id: 'K3bp_UGTjjU', title: 'モブその他大勢'},
+             { id: 'PVNI-v0p6jg', title: '限界集落民の下剋上'},
+             { id: 'XQwXupThaWs', title: 'モブキャラアイドル'},
+             { id: 'w11Ahm5j2ro', title: '株無限ナンピン'},
+             { id: 'B96lgiwbMOc', title: '甘い和三盆の魔法'},
+             { id: 'vaIOgeD226A', title: 'Spring horse racing'},
+             { id: '0zLyYulnhEk', title: '田舎過疎化RTA'},
+             { id: 'Lty5pWr1OJI', title: 'ひょっこ初心者マーク'},
+             { id: 'drrfnU9FJYM', title: '損切りRTA'},
+             { id: 'tYe_wrupAEI', title: 'モブキャラ卒業'},
+             { id: 'LJvOY6C3Fn4', title: '香川県民の成り上がり'},
+             { id: 'dttNIyRFyow', title: '香川県民の下剋上'},
+             { id: 'ilIqOOmA_oA', title: '退職RTA'},
+             { id: 'DpGkta_HOYw', title: '残業代は出ません'},
+             { id: 'MrcmUVnSAoE', title: '締切RTA'},
+             { id: 'VaV0VBL-kFY', title: '家事RTA'},
+             { id: 'zeaCy1COcBA', title: '現実逃避RTA'},
+             { id: '-0EzwUqh_W0', title: '破滅フラグ'},
+             { id: 'NRp56LFsbys', title: '人生攻略RTA'},
+             { id: '65Krkhrbu6Y', title: 'ひなまつりの祈り'},
+             { id: 'SNq9HBpKYTM', title: 'どんぶり勘定'},
+             { id: 'zCocwrWkL6A', title: '屋島の戦い'},
+             { id: 'qRZaZn2RcsU', title: '夢の高配当生活'},
+             { id: 'fEk1kOKcGp8', title: 'ガチャ配信何がでるか分からない'},
+             { id: 'gf9wDXohETQ', title: 'さくらアップデート'},
+             { id: 's2Ct_G39Y6I', title: '定時に帰ります'},
+             { id: 'tv6JKKldfFQ', title: '少子化RTA'},
+             { id: 'zo2-Vw1A5r4', title: '失恋フラグ'},
+             { id: '6Os_ynU7zqg', title: 'さくら便り'},
+             { id: 'serOzfD5nEA', title: '空ぶり'},
+             { id: 'MfAIO953LS0', title: 'あんもち雑煮'},
+             { id: 'rmtQMZgiWa0', title: '義理義理ホワイトデー'},
+             { id: 'EstE1yUQiQo', title: '失恋RTA'},
+             { id: 'RNI-Z2hYgvg', title: '雪風'},
+             { id: 'BeSQipZtPjk', title: 'いい動きブリ'},
+             { id: 'tW5yunDX_Gk', title: '両想いRTA'},
+             { id: 'VIYJkgPJ9hw', title: '頭と尻尾はくれてやれ'},
+             { id: '40MX76syrng', title: '両想いフラグ'},
+             { id: 'jI-WZyBDaSc', title: 'Running in the Moonlight'},
+             { id: 'oaYPaV6va_Q', title: 'ありふれたチョコゲーム'},
+             { id: 'zHIzXjlBgOQ', title: 'You Are My Valentine'},
+             { id: 'SXNb5CAFD9E', title: 'うどんアイドル さぬき生まれ'},
+             { id: 'UUx6W_rqZN4', title: '義理義理バレンタイン'},
+             { id: '4JNsYJ-Zp2k', title: '限界集落レボリューション'},
+             { id: 'vgsE_oD705U', title: 'うどん県＝香川'},
+             { id: 'bEN-PYuukJk', title: 'おいでまい香川'},
+             { id: 'LDDDuNXL-Bg', title: '五円、ご縁がありますように'},
+             { id: 'wi6afsQV_xs', title: 'Dreaming in Kagawa'},
+
+
+            // さらに多くの動画データ...
+        ];
+
+        const videosPerPage = 9; // 1ページあたりの動画数
+        let currentPage = 1;     // 現在のページ番号
+        const videoListEl = document.getElementById('video-list');
+        const paginationControlsEl = document.getElementById('pagination-controls');
+
+        // 動画をDOMに表示する関数
+        function displayVideos(page) {
+            videoListEl.innerHTML = ''; // 現在表示されている動画をクリア
+
+            // 表示する動画の開始インデックスと終了インデックスを計算
+            const startIndex = (page - 1) * videosPerPage;
+            const endIndex = startIndex + videosPerPage;
+
+            // 全動画データから、現在のページで表示する動画を抽出
+            const videosToDisplay = allMusicVideos.slice(startIndex, endIndex);
+
+            // 抽出した動画をページに追加
+            videosToDisplay.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+                videoItem.innerHTML = `
+                    <iframe src="https://www.youtube.com/embed/${video.id}" 
+                            title="${video.title} - ${video.artist}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <div class="video-info">
+                        <h3>${video.title}</h3>
+                    </div>
+                `;
+                videoListEl.appendChild(videoItem);
+            });
+        }
+
+        // ページネーションボタンを生成・更新する関数
+        function setupPagination() {
+            paginationControlsEl.innerHTML = ''; // 古いボタンをクリア
+
+            // 総ページ数を計算
+            const totalPages = Math.ceil(allMusicVideos.length / videosPerPage);
+
+            // 「前へ」ボタン
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '前へ';
+            prevButton.disabled = currentPage === 1; // 1ページ目の場合は無効化
+            prevButton.addEventListener('click', () => {
+                currentPage--;
+                displayVideos(currentPage);
+                updatePaginationButtons();
+            });
+            paginationControlsEl.appendChild(prevButton);
+
+            // ページ番号ボタン
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                if (i === currentPage) {
+                    button.classList.add('active'); // 現在のページをアクティブにする
+                }
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    displayVideos(currentPage);
+                    updatePaginationButtons();
+                });
+                paginationControlsEl.appendChild(button);
+            }
+
+            // 「次へ」ボタン
+            const nextButton = document.createElement('button');
+            nextButton.textContent = '次へ';
+            nextButton.disabled = currentPage === totalPages; // 最後のページの場合は無効化
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                displayVideos(currentPage);
+                updatePaginationButtons();
+            });
+            paginationControlsEl.appendChild(nextButton);
+        }
+
+        // ページネーションボタンのアクティブ状態を更新する関数
+        function updatePaginationButtons() {
+            const buttons = paginationControlsEl.querySelectorAll('button');
+            const totalPages = Math.ceil(allMusicVideos.length / videosPerPage);
+
+            buttons.forEach(button => {
+                // ページ番号ボタンのアクティブ状態を更新
+                if (parseInt(button.textContent) === currentPage) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+                // 「前へ」「次へ」ボタンの有効/無効を更新
+                if (button.textContent === '前へ') {
+                    button.disabled = currentPage === 1;
+                } else if (button.textContent === '次へ') {
+                    button.disabled = currentPage === totalPages;
+                }
+            });
+        }
+
+        // ページが読み込まれたら最初のページを表示し、ページネーションを設定
+        document.addEventListener('DOMContentLoaded', () => {
+            displayVideos(currentPage); // 最初のページを表示
+            setupPagination();         // ページネーションボタンをセットアップ
+        });
+    </script>
+</body>
+</html>
